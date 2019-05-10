@@ -69,5 +69,7 @@ def main():
 		print("Bot train-set size: ", len(bot))
 		print("Human-male train-set size: ", len(male))
 		print("Human-female train-set size: ", len(female))
+		print("Dataset saved to ", str(out_dir))
+		print("--------------------------------------------------")
 
 main()

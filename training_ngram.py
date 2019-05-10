@@ -85,22 +85,23 @@ def training():
         mkdir(out_dir)
         female , male = loading_datasets(os.path.join(input_dir,dir,'human_female.txt'), 
                                     os.path.join(input_dir,dir,'human_male.txt') )
-        print("Human-male train-set size: ", len(male))
-        print("Human-female train-set size: ", len(female))
+        print("\t Human-male train-set size: ", len(male))
+        print("\t Human-female train-set size: ", len(female))
 
         #training for male and female
-        print("prepare train ...")
+        print("\t Preparing Male&Female dataset for N-Gram vectorizer ...")
         train_set = male + female
         train_set = [Preprocessing(text , stopwords_list[dir]) for text in male] + \
                     [Preprocessing(text , stopwords_list[dir]) for text in female]
         train_labels = ['male' for _ in male] + ['female' for _ in female]
         
-        print("Extracting Vocabluary .... ")
+        print("\t Extracting Male&Female Vocabluary .... ")
         ngram_vocabulary = ngram_extract_vocabulary(train_set , n , ft)
+        print("\t Train N-Gram for Male&Female Profiling ....")
         ngram_vectorizer = CountVectorizer(strip_accents=False, analyzer='char',ngram_range=(n,n),lowercase=False,vocabulary=ngram_vocabulary)
-        print("Prepare train ....")
         ngram_train_data = ngram_vectorizer.fit_transform(train_set)
         pickle.dump(ngram_vectorizer.vocabulary_,open( os.path.join( out_dir , "ngram_male_female.pkl"),"wb"))
-        print('------------------------------------')
+        print("\t Trained N-gram Vectorizer vocabulary saved to :", str(os.path.join( out_dir , "ngram_male_female.pkl")))
+        print('\t ------------------------------------')
 
 training()

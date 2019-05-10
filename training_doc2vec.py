@@ -66,22 +66,23 @@ def training():
         print("Human-male train-set size: ", len(male))
         print("Human-female train-set size: ", len(female))
 
-        #training for male and female
-        print("prepare train ...")
+        print("\t Preparing Male&Female dataset for Doc2Vec Training .... ")
         train_set = male + female
         train_set = [Preprocessing(text , stopwords_list[dir]) for text in male] + \
                     [Preprocessing(text , stopwords_list[dir]) for text in female]
         train_labels = ['male' for _ in male] + ['female' for _ in female]
         
         doc2vec_train_set=[TaggedDocument(words=train_set[i].split(),tags=[train_labels[i]]) for i in range(0,len(train_set))]
-        print("Build vocab and train doc2vec .... ")
+        print("\t Building vocab for doc2vec .... ")
         n_dim = 300
         doc2vec_model = Doc2Vec(min_count=1,size=n_dim)
         doc2vec_model.build_vocab([x for x in tqdm(doc2vec_train_set)])
+        print("\t Training DOC2VEC")
         for epoch in range(20):
-            print("Training epoch ", epoch)
+            print("\t Training epoch ", epoch)
             doc2vec_model.train(doc2vec_train_set, total_examples=doc2vec_model.corpus_count, epochs=doc2vec_model.iter,)
         doc2vec_model.save(os.path.join( out_dir , 'doc2vec_male_female.d2v'))
-        print('------------------------------------')
+        print("\t Trained  Doc2Vec saved to :", str(os.path.join( out_dir , "doc2vec_male_female.d2v")))
+        print('\t ------------------------------------')
 
 training()

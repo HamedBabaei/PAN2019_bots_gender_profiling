@@ -82,33 +82,34 @@ def training():
         bot , female , male  = loading_datasets( os.path.join(input_dir,dir,'bot.txt') , 
                                     os.path.join(input_dir,dir,'human_female.txt'), 
                                     os.path.join(input_dir,dir,'human_male.txt') )
-        print("Bot train-set size: ", len(bot))
-        print("Human-male train-set size: ", len(male))
-        print("Human-female train-set size: ", len(female))
+        print("\t Bot train-set size: ", len(bot))
+        print("\t Human-male train-set size: ", len(male))
+        print("\t Human-female train-set size: ", len(female))
 
-        #training for human and bot
+        print("\t Preparing Human&Bot dataset for tfidf vectorizer .... ")
         train_set = male + female + bot
         train_labels = ['human' for _ in male] + ['human' for _ in female] + ['bot' for _ in bot]
         tfidf_train = [Preprocessing(text , stopwords_list[dir]) for text in train_set]
      
-        print("\t Extract vocabulary .... ")
+        print("\t Extracting Human&Bot vocabulary .... ")
         vocab = extract_vocabulary(tfidf_train , ft )
-        print("\t Train TF-IDF .... ")
+        print("\t Train TF-IDF for Human&Bot Profiling .... ")
         vectorizer  = TfidfVectorizer(vocabulary=vocab,norm='l2', strip_accents=False,sublinear_tf=True)
         tfidf_train_data = vectorizer.fit_transform(tfidf_train)
         pickle.dump(vectorizer.vocabulary_,open( os.path.join( out_dir , "tfidf_human_bot.pkl"),"wb"))
+        print("\tTrained TF-IDF vocabulary saved to :", str(os.path.join( out_dir , "tfidf_human_bot.pkl")))
 
-        #training for male and female
+        print("\t Preparing Male&Female dataset for tfidf vectorizer .... ")
         train_set = male + female
         train_labels = ['male' for _ in male] + ['female' for _ in female]
         tfidf_train = [Preprocessing(text , stopwords_list[dir]) for text in train_set]
-
-        print("\t Extract vocabulary for male and female .... ")
+        print("\t Extracting Male&Female vocabulary .... ")
         vocab = extract_vocabulary(tfidf_train , ft )
-        print("\t Train TF-IDF for male and female .... ")
+        print("\t Train TF-IDF for Male&Female Profiling .... ")
         vectorizer  = TfidfVectorizer(vocabulary=vocab,norm='l2', strip_accents=False,sublinear_tf=True)
         tfidf_train_data = vectorizer.fit_transform(tfidf_train)
         pickle.dump(vectorizer.vocabulary_,open( os.path.join( out_dir , "tfidf_male_female.pkl"),"wb"))
-        print('------------------------------------')
+        print("\t Trained TF-IDF vocabulary saved to :", str(os.path.join( out_dir , "tfidf_male_female.pkl")))
+        print('\t ------------------------------------')
 
 training()
